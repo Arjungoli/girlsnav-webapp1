@@ -89,6 +89,22 @@
         .fade-in {
             animation: fadeIn 0.5s ease forwards;
         }
+
+        .thumbnail-container {
+            display: none;
+            transition: all 0.3s ease;
+        }
+
+        .thumbnail-container.active {
+            display: block;
+        }
+
+        .thumbnail-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
     </style>
 </head>
 <body class="min-h-screen">
@@ -129,6 +145,17 @@
                         <p class="text-gray-500 mb-4">or click to select a file</p>
                         <p class="text-sm text-gray-400">Supported formats: MP4, AVI, MOV</p>
                     </div>
+                </div>
+            </div>
+
+            <!-- Thumbnail Preview Section -->
+            <div id="thumbnailSection" class="thumbnail-container mb-8 text-center">
+                <h3 class="text-xl font-semibold text-gray-800 mb-4">Video Preview</h3>
+                <div class="relative inline-block">
+                    <img id="thumbnailImage" class="thumbnail-image" src="" alt="Video thumbnail">
+                    <button id="analyzeButton" class="mt-4 px-6 py-3 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition-colors">
+                        <i class="fas fa-play-circle mr-2"></i>Analyze Video
+                    </button>
                 </div>
             </div>
 
@@ -181,6 +208,11 @@
         const totalPasses = document.getElementById('totalPasses');
         const reboundsList = document.getElementById('reboundsList');
         const progressBar = document.querySelector('.progress-bar-fill');
+        const thumbnailSection = document.getElementById('thumbnailSection');
+        const thumbnailImage = document.getElementById('thumbnailImage');
+        const analyzeButton = document.getElementById('analyzeButton');
+
+        let currentVideoFilename = null;
 
         // Handle drag and drop
         dropZone.addEventListener('dragover', (e) => {
@@ -209,18 +241,12 @@
             handleFile(file);
         });
 
-        function simulateProgress() {
-            let width = 0;
-            const interval = setInterval(() => {
-                if (width >= 100) {
-                    clearInterval(interval);
-                } else {
-                    width += Math.random() * 10;
-                    if (width > 100) width = 100;
-                    progressBar.style.width = width + '%';
-                }
-            }, 500);
-        }
+        // Handle analyze button click
+        analyzeButton.addEventListener('click', () => {
+            if (currentVideoFilename) {
+                analyzeVideo(currentVideoFilename);
+            }
+        });
 
         function handleFile(file) {
             if (!file) return;
@@ -230,11 +256,43 @@
 
             loadingIndicator.classList.add('active');
             results.classList.add('hidden');
-            simulateProgress();
+            thumbnailSection.classList.remove('active');
 
             fetch('/upload', {
                 method: 'POST',
                 body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert(data.error);
+                    return;
+                }
+
+                // Show thumbnail
+                currentVideoFilename = data.filename;
+                thumbnailImage.src = `/thumbnails/${data.thumbnail}`;
+                thumbnailSection.classList.add('active');
+            })
+            .catch(error => {
+                alert('Error uploading video: ' + error);
+            })
+            .finally(() => {
+                loadingIndicator.classList.remove('active');
+            });
+        }
+
+        function analyzeVideo(filename) {
+            loadingIndicator.classList.add('active');
+            results.classList.add('hidden');
+            progressBar.style.width = '0%';
+
+            fetch('/analyze', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ filename: filename })
             })
             .then(response => response.json())
             .then(data => {

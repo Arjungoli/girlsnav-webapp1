@@ -1,6 +1,8 @@
-Flask==2.3.3
+Flask==2.0.1
 gunicorn==21.2.0
-opencv-python==4.8.1.78
-numpy==1.24.4
+opencv-python==4.5.3.56
+numpy==1.21.2
 openai==1.14.3
 httpx==0.27.0
+werkzeug==2.0.1
+pillow==8.3.2
