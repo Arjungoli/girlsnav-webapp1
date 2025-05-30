@@ -7,7 +7,7 @@ import cv2
 from collections import defaultdict
 
 # --- Initialize OpenAI client ---
-client = openai.OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
+openai.api_key = os.environ.get("OPENAI_API_KEY")
 
 # --- Encode image to base64 ---
 def encode_image(image_path):
