@@ -162,5 +162,9 @@ def analyze_video() -> Tuple[Dict[str, Any], int]:
         logger.error(f"Error analyzing video: {str(e)}", exc_info=True)
         return jsonify({"error": f"Internal server error: {str(e)}"}), 500
 
+@app.route('/about')
+def about():
+    return render_template('about.html')
+
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=5000)
