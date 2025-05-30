@@ -47,7 +47,7 @@ def upload_video():
     video.save(video_path)
 
     # Extract frames
-    extract_frames(video_path, folder=FRAMES_FOLDER, step=30)
+    extract_frames(video_path, output_dir=FRAMES_FOLDER, step=30)
 
     # Analyze frames
     points, passes, rebounds = aggregate_stats(FRAMES_FOLDER)
