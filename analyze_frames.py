@@ -32,7 +32,7 @@ Output JSON like:
 }
 """
 
-    response = client.chat.completions.create(
+    response = openai.chat.completions.create(
         model="gpt-4o",
         messages=[
             {"role": "system", "content": "You analyze basketball frames for player stats."},
@@ -56,6 +56,7 @@ Output JSON like:
     )
 
     return response.choices[0].message.content
+
 
 # --- Annotate a frame with overlays ---
 def annotate_frame(image_path, annotations, output_path):
