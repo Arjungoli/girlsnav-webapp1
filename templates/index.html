@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GirlsNav - Basketball Analysis</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        .drop-zone {
+            border: 2px dashed #4a5568;
+            transition: all 0.3s ease;
+        }
+        .drop-zone:hover {
+            border-color: #4299e1;
+            background-color: #f7fafc;
+        }
+        .loading {
+            display: none;
+        }
+        .loading.active {
+            display: flex;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <header class="text-center mb-12">
+            <h1 class="text-4xl font-bold text-gray-800 mb-2">GirlsNav</h1>
+            <p class="text-gray-600">Basketball Game Analysis</p>
+        </header>
+
+        <div class="max-w-2xl mx-auto bg-white rounded-lg shadow-lg p-6">
+            <div id="upload-section" class="mb-8">
+                <div class="drop-zone rounded-lg p-8 text-center cursor-pointer" id="dropZone">
+                    <input type="file" id="fileInput" class="hidden" accept=".mp4,.avi,.mov">
+                    <div class="text-gray-600">
+                        <svg class="mx-auto h-12 w-12 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+                        </svg>
+                        <p class="text-lg">Drag and drop your video here</p>
+                        <p class="text-sm mt-2">or click to select a file</p>
+                        <p class="text-xs text-gray-500 mt-2">Supported formats: MP4, AVI, MOV</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="loading items-center justify-center space-x-2" id="loadingIndicator">
+                <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+                <span class="text-gray-600">Analyzing video...</span>
+            </div>
+
+            <div id="results" class="hidden">
+                <h2 class="text-2xl font-semibold mb-4">Game Statistics</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="bg-blue-50 p-4 rounded-lg">
+                        <h3 class="font-semibold text-blue-800 mb-2">Points</h3>
+                        <div id="pointsList" class="space-y-1"></div>
+                    </div>
+                    
+                    <div class="bg-green-50 p-4 rounded-lg">
+                        <h3 class="font-semibold text-green-800 mb-2">Total Passes</h3>
+                        <p id="totalPasses" class="text-2xl font-bold text-green-600">0</p>
+                    </div>
+                    
+                    <div class="bg-purple-50 p-4 rounded-lg">
+                        <h3 class="font-semibold text-purple-800 mb-2">Rebounds</h3>
+                        <div id="reboundsList" class="space-y-1"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('fileInput');
+        const loadingIndicator = document.getElementById('loadingIndicator');
+        const results = document.getElementById('results');
+        const pointsList = document.getElementById('pointsList');
+        const totalPasses = document.getElementById('totalPasses');
+        const reboundsList = document.getElementById('reboundsList');
+
+        // Handle drag and drop
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('border-blue-500');
+        });
+
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('border-blue-500');
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('border-blue-500');
+            const file = e.dataTransfer.files[0];
+            handleFile(file);
+        });
+
+        // Handle click to upload
+        dropZone.addEventListener('click', () => {
+            fileInput.click();
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            handleFile(file);
+        });
+
+        function handleFile(file) {
+            if (!file) return;
+
+            const formData = new FormData();
+            formData.append('video', file);
+
+            loadingIndicator.classList.add('active');
+            results.classList.add('hidden');
+
+            fetch('/upload', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert(data.error);
+                    return;
+                }
+
+                displayResults(data.stats);
+            })
+            .catch(error => {
+                alert('Error analyzing video: ' + error);
+            })
+            .finally(() => {
+                loadingIndicator.classList.remove('active');
+            });
+        }
+
+        function displayResults(stats) {
+            // Clear previous results
+            pointsList.innerHTML = '';
+            reboundsList.innerHTML = '';
+
+            // Display points
+            Object.entries(stats.points).forEach(([jersey, points]) => {
+                pointsList.innerHTML += `
+                    <div class="flex justify-between">
+                        <span>Jersey #${jersey}</span>
+                        <span class="font-semibold">${points} pts</span>
+                    </div>
+                `;
+            });
+
+            // Display total passes
+            totalPasses.textContent = stats.passes;
+
+            // Display rebounds
+            Object.entries(stats.rebounds).forEach(([jersey, rebounds]) => {
+                reboundsList.innerHTML += `
+                    <div class="flex justify-between">
+                        <span>Jersey #${jersey}</span>
+                        <span class="font-semibold">${rebounds} reb</span>
+                    </div>
+                `;
+            });
+
+            results.classList.remove('hidden');
+        }
+    </script>
+</body>
+</html> 
