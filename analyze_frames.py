@@ -6,8 +6,8 @@ import csv
 import cv2
 from collections import defaultdict
 
-# --- Initialize OpenAI client ---
-openai.api_key = os.environ.get("OPENAI_API_KEY")
+# --- Initialize OpenAI client (new SDK style) ---
+client = openai.OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 
 # --- Encode image to base64 ---
 def encode_image(image_path):
@@ -32,7 +32,7 @@ Output JSON like:
 }
 """
 
-    response = openai.chat.completions.create(
+    response = client.chat.completions.create(
         model="gpt-4o",
         messages=[
             {"role": "system", "content": "You analyze basketball frames for player stats."},
@@ -56,7 +56,6 @@ Output JSON like:
     )
 
     return response.choices[0].message.content
-
 
 # --- Annotate a frame with overlays ---
 def annotate_frame(image_path, annotations, output_path):
