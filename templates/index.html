@@ -2,89 +2,370 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>GirlsNav: Your AI Coach Companion</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GirlsNav - Basketball Analysis</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
   <style>
-    .hidden { display: none; }
-    .progress-bar { width: 100%; background-color: #f3f3f3; border-radius: 4px; overflow: hidden; margin-top: 10px; }
-    .progress-fill { height: 20px; background-color: #4caf50; width: 0%; transition: width 0.4s ease-in-out; }
-    .description { font-size: 1.1em; margin: 20px 0; max-width: 700px; }
+    :root {
+      --primary: #4f46e5;
+      --primary-dark: #4338ca;
+      --secondary: #10b981;
+      --accent: #8b5cf6;
+    }
+
+    body {
+      background: linear-gradient(135deg, #f6f7ff 0%, #f0f9ff 100%);
+    }
+
+    .drop-zone {
+      border: 2px dashed #e5e7eb;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      background: white;
+    }
+
+    .drop-zone:hover, .drop-zone.dragover {
+      border-color: var(--primary);
+      background-color: #f8fafc;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+
+    .loading {
+      display: none;
+    }
+
+    .loading.active {
+      display: flex;
+    }
+
+    .stat-card {
+      transition: all 0.3s ease;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 4px;
+      background-color: #e5e7eb;
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background-color: var(--primary);
+      transition: width 0.3s ease;
+    }
+
+    .nav-link {
+      position: relative;
+    }
+
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 2px;
+      bottom: -2px;
+      left: 0;
+      background-color: var(--primary);
+      transition: width 0.3s ease;
+    }
+
+    .nav-link:hover::after {
+      width: 100%;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .fade-in {
+      animation: fadeIn 0.5s ease forwards;
+    }
+
+    .thumbnail-container {
+      display: none;
+      transition: all 0.3s ease;
+    }
+
+    .thumbnail-container.active {
+      display: block;
+    }
+
+    .thumbnail-image {
+      max-width: 100%;
+      height: auto;
+      border-radius: 0.5rem;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
   </style>
 </head>
-<body>
-  <h1>GirlsNav</h1>
-  <p class="description">
-    GirlsNav is your daughter’s AI-powered training companion designed to give youth athletes every advantage to shine on the court. With personalized video analysis, performance insights, and real-time feedback, GirlsNav helps young players build confidence, skill, and game time — while giving parents a transparent view into their child's athletic growth.
-  </p>
-
-  <!-- Upload Section -->
-  <div id="uploadSection">
-    <form id="uploadForm" enctype="multipart/form-data">
-      <label for="videoFile">Upload your game video:</label>
-      <input type="file" id="videoFile" name="video" accept="video/*" required>
-      <button type="submit">Upload</button>
-    </form>
-  </div>
-
-  <!-- Video Preview Thumbnail -->
-  <div id="videoThumbnail" class="hidden">
-    <p>Video uploaded:</p>
-    <img id="thumbnailPreview" src="" alt="Video thumbnail" style="width: 300px;">
-  </div>
-
-  <!-- Analyze Button -->
-  <div id="analyzeSection" class="hidden">
-    <button id="analyzeBtn">Analyze Video</button>
-    <div class="progress-bar">
-      <div id="progressFill" class="progress-fill"></div>
+<body class="min-h-screen">
+  <!-- Navigation -->
+  <nav class="bg-white shadow-sm">
+    <div class="container mx-auto px-4">
+      <div class="flex justify-between items-center h-16">
+        <div class="flex items-center space-x-8">
+          <a href="/" class="text-xl font-bold text-gray-800">GirlsNav</a>
+          <div class="hidden md:flex space-x-6">
+            <a href="/" class="nav-link text-gray-600 hover:text-gray-900">Home</a>
+            <a href="#" class="nav-link text-gray-600 hover:text-gray-900">Analysis</a>
+            <a href="#" class="nav-link text-gray-600 hover:text-gray-900">About</a>
+          </div>
+        </div>
+        <div class="flex items-center space-x-4">
+          <button class="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700 transition-colors">
+            Sign In
+          </button>
+        </div>
+      </div>
     </div>
-    <p id="progressStatus"></p>
+  </nav>
+
+  <div class="container mx-auto px-4 py-12">
+    <header class="text-center mb-16 fade-in">
+      <h1 class="text-5xl font-bold text-gray-800 mb-4">Basketball Game Analysis</h1>
+      <p class="text-xl text-gray-600 max-w-2xl mx-auto">Upload your game video and get instant insights into player performance, team statistics, and game dynamics.</p>
+    </header>
+
+    <div class="max-w-4xl mx-auto">
+      <div id="upload-section" class="mb-12 fade-in">
+        <div class="drop-zone rounded-xl p-12 text-center cursor-pointer" id="dropZone">
+          <input type="file" id="fileInput" class="hidden" accept=".mp4,.avi,.mov">
+          <div class="text-gray-600">
+            <i class="fas fa-cloud-upload-alt text-6xl mb-6 text-indigo-500"></i>
+            <p class="text-2xl font-medium mb-2">Drag and drop your video here</p>
+            <p class="text-gray-500 mb-4">or click to select a file</p>
+            <p class="text-sm text-gray-400">Supported formats: MP4, AVI, MOV</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Thumbnail Preview Section -->
+      <div id="thumbnailSection" class="thumbnail-container mb-8 text-center">
+        <h3 class="text-xl font-semibold text-gray-800 mb-4">Video Preview</h3>
+        <div class="relative inline-block">
+          <img id="thumbnailImage" class="thumbnail-image" src="" alt="Video thumbnail">
+          <button id="analyzeButton" class="mt-4 px-6 py-3 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition-colors">
+            <i class="fas fa-play-circle mr-2"></i>Analyze Video
+          </button>
+        </div>
+      </div>
+
+      <div class="loading items-center justify-center space-x-4 mb-8" id="loadingIndicator">
+        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-500"></div>
+        <span class="text-gray-600">Analyzing video...</span>
+        <div class="progress-bar w-64">
+          <div class="progress-bar-fill" style="width: 0%"></div>
+        </div>
+      </div>
+
+      <div id="results" class="hidden fade-in">
+        <h2 class="text-3xl font-bold text-gray-800 mb-8">Game Statistics</h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="stat-card bg-white p-6 rounded-xl shadow-md">
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="text-lg font-semibold text-gray-800">Points</h3>
+              <i class="fas fa-basketball-ball text-indigo-500 text-xl"></i>
+            </div>
+            <div id="pointsList" class="space-y-3"></div>
+          </div>
+          
+          <div class="stat-card bg-white p-6 rounded-xl shadow-md">
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="text-lg font-semibold text-gray-800">Total Passes</h3>
+              <i class="fas fa-exchange-alt text-green-500 text-xl"></i>
+            </div>
+            <p id="totalPasses" class="text-4xl font-bold text-green-600">0</p>
+          </div>
+          
+          <div class="stat-card bg-white p-6 rounded-xl shadow-md">
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="text-lg font-semibold text-gray-800">Rebounds</h3>
+              <i class="fas fa-hand-paper text-purple-500 text-xl"></i>
+            </div>
+            <div id="reboundsList" class="space-y-3"></div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <script>
-    const uploadForm = document.getElementById("uploadForm");
-    const uploadSection = document.getElementById("uploadSection");
-    const videoThumbnail = document.getElementById("videoThumbnail");
-    const thumbnailPreview = document.getElementById("thumbnailPreview");
-    const analyzeSection = document.getElementById("analyzeSection");
-    const analyzeBtn = document.getElementById("analyzeBtn");
-    const progressFill = document.getElementById("progressFill");
-    const progressStatus = document.getElementById("progressStatus");
+    const dropZone = document.getElementById('dropZone');
+    const fileInput = document.getElementById('fileInput');
+    const loadingIndicator = document.getElementById('loadingIndicator');
+    const results = document.getElementById('results');
+    const pointsList = document.getElementById('pointsList');
+    const totalPasses = document.getElementById('totalPasses');
+    const reboundsList = document.getElementById('reboundsList');
+    const progressBar = document.querySelector('.progress-bar-fill');
+    const thumbnailSection = document.getElementById('thumbnailSection');
+    const thumbnailImage = document.getElementById('thumbnailImage');
+    const analyzeButton = document.getElementById('analyzeButton');
 
-    uploadForm.addEventListener("submit", async (e) => {
+    let currentVideoFilename = null;
+
+    // Handle drag and drop
+    dropZone.addEventListener('dragover', (e) => {
       e.preventDefault();
-      const formData = new FormData(uploadForm);
-      const response = await fetch("/upload", {
-        method: "POST",
-        body: formData
-      });
+      dropZone.classList.add('dragover');
+    });
 
-      const result = await response.json();
-      if (result.status === "success") {
-        thumbnailPreview.src = result.thumbnail;
-        uploadSection.classList.add("hidden");
-        videoThumbnail.classList.remove("hidden");
-        analyzeSection.classList.remove("hidden");
-      } else {
-        alert("Upload failed: " + result.message);
+    dropZone.addEventListener('dragleave', () => {
+      dropZone.classList.remove('dragover');
+    });
+
+    dropZone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropZone.classList.remove('dragover');
+      const file = e.dataTransfer.files[0];
+      handleFile(file);
+    });
+
+    // Handle click to upload
+    dropZone.addEventListener('click', () => {
+      fileInput.click();
+    });
+
+    fileInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      handleFile(file);
+    });
+
+    // Handle analyze button click
+    analyzeButton.addEventListener('click', () => {
+      if (currentVideoFilename) {
+        analyzeVideo(currentVideoFilename);
       }
     });
 
-    analyzeBtn.addEventListener("click", () => {
-      progressFill.style.width = "0%";
-      progressStatus.innerText = "Starting analysis...";
+    function handleFile(file) {
+      if (!file) return;
 
-      let progress = 0;
-      const interval = setInterval(() => {
-        if (progress >= 100) {
-          clearInterval(interval);
-          progressStatus.innerText = "Analysis complete!";
-          return;
+      const formData = new FormData();
+      formData.append('video', file);
+
+      loadingIndicator.classList.add('active');
+      results.classList.add('hidden');
+      thumbnailSection.classList.remove('active');
+
+      fetch('/upload', {
+        method: 'POST',
+        body: formData
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
         }
-        progress += 10;
-        progressFill.style.width = `${progress}%`;
-        progressStatus.innerText = `Analyzing video: ${progress}%`;
-      }, 500);
-    });
+        return response.json();
+      })
+      .then(data => {
+        if (data.error) {
+          throw new Error(data.error);
+        }
+
+        // Show thumbnail
+        currentVideoFilename = data.filename;
+        thumbnailImage.src = `/thumbnails/${data.thumbnail}`;
+        thumbnailSection.classList.add('active');
+      })
+      .catch(error => {
+        console.error('Upload error:', error);
+        alert('Error uploading video: ' + error.message);
+      })
+      .finally(() => {
+        loadingIndicator.classList.remove('active');
+      });
+    }
+
+    function analyzeVideo(filename) {
+      loadingIndicator.classList.add('active');
+      results.classList.add('hidden');
+      progressBar.style.width = '0%';
+
+      fetch('/analyze', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ filename: filename })
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then(data => {
+        if (data.error) {
+          throw new Error(data.error);
+        }
+
+        displayResults(data.stats);
+      })
+      .catch(error => {
+        console.error('Analysis error:', error);
+        alert('Error analyzing video: ' + error.message);
+      })
+      .finally(() => {
+        loadingIndicator.classList.remove('active');
+        progressBar.style.width = '100%';
+      });
+    }
+
+    function displayResults(stats) {
+      // Clear previous results
+      pointsList.innerHTML = '';
+      reboundsList.innerHTML = '';
+
+      // Display points
+      Object.entries(stats.points).forEach(([jersey, points]) => {
+        pointsList.innerHTML += `
+          <div class="flex justify-between items-center p-2 rounded-lg hover:bg-gray-50 transition-colors">
+            <span class="text-gray-600">Jersey #${jersey}</span>
+            <span class="font-semibold text-indigo-600">${points} pts</span>
+          </div>
+        `;
+      });
+
+      // Display total passes with animation
+      let currentPasses = 0;
+      const targetPasses = stats.passes;
+      const duration = 1500;
+      const steps = 60;
+      const increment = targetPasses / steps;
+      const interval = duration / steps;
+
+      const counter = setInterval(() => {
+        currentPasses += increment;
+        if (currentPasses >= targetPasses) {
+          currentPasses = targetPasses;
+          clearInterval(counter);
+        }
+        totalPasses.textContent = Math.round(currentPasses);
+      }, interval);
+
+      // Display rebounds
+      Object.entries(stats.rebounds).forEach(([jersey, rebounds]) => {
+        reboundsList.innerHTML += `
+          <div class="flex justify-between items-center p-2 rounded-lg hover:bg-gray-50 transition-colors">
+            <span class="text-gray-600">Jersey #${jersey}</span>
+            <span class="font-semibold text-purple-600">${rebounds} reb</span>
+          </div>
+        `;
+      });
+
+      results.classList.remove('hidden');
+    }
   </script>
 </body>
 </html>
