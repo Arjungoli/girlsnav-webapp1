@@ -136,6 +136,17 @@
     </header>
 
     <div class="max-w-4xl mx-auto">
+      <!-- Thumbnail Preview Section -->
+      <div id="thumbnailSection" class="thumbnail-container mb-8 text-center">
+        <h3 class="text-xl font-semibold text-gray-800 mb-4">Video Preview</h3>
+        <div class="relative inline-block">
+          <img id="thumbnailImage" class="thumbnail-image" src="" alt="Video thumbnail">
+          <button id="analyzeButton" class="mt-4 px-6 py-3 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition-colors">
+            <i class="fas fa-play-circle mr-2"></i>Analyze Video
+          </button>
+        </div>
+      </div>
+
       <!-- Stats Section -->
       <div id="results" class="hidden fade-in mb-8">
         <h2 class="text-3xl font-bold text-gray-800 mb-8">Game Statistics</h2>
@@ -185,17 +196,6 @@
         <span class="text-gray-600">Analyzing video...</span>
         <div class="progress-bar w-64">
           <div class="progress-bar-fill" style="width: 0%"></div>
-        </div>
-      </div>
-
-      <!-- Thumbnail Preview Section -->
-      <div id="thumbnailSection" class="thumbnail-container mb-8 text-center">
-        <h3 class="text-xl font-semibold text-gray-800 mb-4">Video Preview</h3>
-        <div class="relative inline-block">
-          <img id="thumbnailImage" class="thumbnail-image" src="" alt="Video thumbnail">
-          <button id="analyzeButton" class="mt-4 px-6 py-3 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition-colors">
-            <i class="fas fa-play-circle mr-2"></i>Analyze Video
-          </button>
         </div>
       </div>
     </div>
@@ -279,6 +279,10 @@
         currentVideoFilename = data.filename;
         thumbnailImage.src = `/thumbnails/${data.thumbnail}`;
         thumbnailSection.classList.add('active');
+        
+        // Move thumbnail section to top
+        const container = document.querySelector('.max-w-4xl');
+        container.insertBefore(thumbnailSection, container.firstChild);
       })
       .catch(error => {
         console.error('Upload error:', error);
@@ -313,6 +317,10 @@
         }
 
         displayResults(data.stats);
+        
+        // Move results section after thumbnail
+        const container = document.querySelector('.max-w-4xl');
+        container.insertBefore(results, thumbnailSection.nextSibling);
       })
       .catch(error => {
         console.error('Analysis error:', error);
