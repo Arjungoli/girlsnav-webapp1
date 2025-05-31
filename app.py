@@ -166,5 +166,9 @@ def analyze_video() -> Tuple[Dict[str, Any], int]:
 def about():
     return render_template('about.html')
 
+@app.route('/analysis')
+def analysis():
+    return render_template('analysis.html')
+
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=5000)

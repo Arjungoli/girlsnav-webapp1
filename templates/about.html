@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>About | GirlsNav</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
   <style>
     body {
       font-family: 'Inter', Arial, sans-serif;
@@ -142,86 +144,78 @@
     }
   </style>
 </head>
-<body>
+<body class="min-h-screen">
   <!-- Navigation -->
   <nav class="bg-white shadow-sm">
-    <div class="container mx-auto px-4">
-      <div class="flex justify-between items-center h-16">
-        <div class="flex items-center space-x-8">
-          <a href="/" class="text-2xl font-extrabold text-purple-500 tracking-tight">GirlsNav</a>
-          <div class="hidden md:flex space-x-6">
-            <a href="/" class="nav-link text-purple-500 hover:text-purple-700 focus:text-purple-700 transition-colors font-medium">Home</a>
-            <a href="#" class="nav-link text-purple-500 hover:text-purple-700 focus:text-purple-700 transition-colors font-medium">Analysis</a>
-            <a href="/about" class="nav-link text-purple-500 hover:text-purple-700 focus:text-purple-700 transition-colors font-medium">About</a>
+    <div class="container mx-auto px-6 py-0">
+      <div class="flex justify-between items-center h-8">
+        <div class="flex items-center space-x-6">
+          <a href="/" class="text-3xl font-extrabold text-purple-500 tracking-tight">GirlsNav</a>
+          <div class="flex space-x-6">
+            <a href="/" class="nav-link text-lg text-purple-500 hover:text-purple-700 focus:text-purple-700 transition-colors font-medium">Home</a>
+            <a href="/analysis" class="nav-link text-lg text-purple-500 hover:text-purple-700 focus:text-purple-700 transition-colors font-medium">Analysis</a>
+            <a href="/about" class="nav-link text-lg text-purple-500 hover:text-purple-700 focus:text-purple-700 transition-colors font-medium">About</a>
           </div>
-        </div>
-        <div class="flex items-center space-x-4">
-          <button class="px-4 py-2 text-sm font-semibold text-white bg-purple-500 rounded-md hover:bg-purple-600 focus:bg-purple-700 transition-colors shadow">Sign In</button>
         </div>
       </div>
     </div>
   </nav>
 
-  <div class="hero">
-    <h1>Empowering the Next Generation of Athletes</h1>
-    <p>GirlsNav turns game footage into performance insights — helping athletes grow with confidence and giving families a clear view of their journey.</p>
+  <div class="bg-purple-50 pt-3 pb-3 mb-2 border-b border-purple-100">
+    <div class="max-w-5xl mx-auto px-4 text-center">
+      <h1 class="text-3xl font-extrabold text-purple-500 mb-0.5">Empowering the Next Generation of Athletes</h1>
+      <p class="text-sm text-gray-700">GirlsNav turns game footage into performance insights — helping athletes grow with confidence and giving families a clear view of their journey.</p>
+    </div>
   </div>
 
-  <div class="container">
-    <div class="section">
-      <h2>Why We Built GirlsNav</h2>
-      <p>
+  <div class="container mx-auto px-4 max-w-5xl">
+    <section class="mb-6 -mt-1">
+      <h2 class="text-2xl font-bold text-purple-500 mb-2">Why We Built GirlsNav</h2>
+      <p class="text-base text-gray-700">
         Youth athletes pour their energy into practices and games, but measuring that growth shouldn't require advanced tools or manual stat tracking. We created GirlsNav to bring clarity and confidence to that process — so parents and players can focus on what matters: development, effort, and progress.
       </p>
-    </div>
+    </section>
 
-    <div class="section">
-      <h2>What GirlsNav Delivers</h2>
-      <div class="features">
-        <div class="feature">
-          <strong>Video-based stats</strong>
-          <p>Upload footage and get automated breakdowns of points, assists, rebounds, and more.</p>
-        </div>
-        <div class="feature">
-          <strong>Player-specific insights</strong>
-          <p>Track performance by jersey number with no extra hardware needed.</p>
-        </div>
-        <div class="feature">
-          <strong>No manual work</strong>
-          <p>Forget spreadsheets and stopwatches. Let GirlsNav do the tracking.</p>
-        </div>
-        <div class="feature">
-          <strong>For teams & families</strong>
-          <p>Built to help parents, coaches, and young athletes work together better.</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="section">
-      <h2>Meet Our Team</h2>
-      <div class="team">
-        <div class="team-member">
-          <img src="/static/pavithra.jpeg" alt="Pavithra Gopisetty">
+    <section class="mb-6">
+      <h2 class="text-2xl font-bold text-purple-500 mb-4">Meet Our Team</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="flex flex-col md:flex-row items-center bg-white border border-purple-100 rounded-lg p-4 shadow-md max-w-2xl mx-auto">
+          <img src="/static/pavithra.jpeg" alt="Pavithra Gopisetty" class="w-20 h-20 rounded-full border-2 border-purple-400 object-cover mb-3 md:mb-0 md:mr-6">
           <div>
-            <div class="name">Pavithra Gopisetty</div>
-            <div class="role">Co-Founder and CEO</div>
-            <div class="bio">
+            <div class="text-lg font-semibold text-purple-700 mb-1">Pavithra Gopisetty</div>
+            <div class="text-sm text-purple-500 font-medium mb-1">Co-Founder and CEO</div>
+            <div class="text-sm text-gray-600 mb-2">
               Pavithra Gopisetty is a seasoned technology executive and innovation leader with a passion for building impactful products that bridge data, AI, and human potential. With years of experience leading engineering and product teams at companies like Apple and Osaic, she brings deep expertise in creating scalable digital platforms.<br><br>
               Pavithra founded GirlsNav to empower young athletes and their families with meaningful insights — making skill development transparent, measurable, and inspiring. She believes that access to smart tools can change how athletes grow, perform, and gain confidence — both on and off the court.
             </div>
-            <a href="https://www.linkedin.com/in/pavithra-gopisetty" target="_blank" rel="noopener" class="inline-flex items-center px-3 py-1.5 mt-3 bg-purple-500 text-white rounded-md font-medium hover:bg-purple-600 transition" style="text-decoration:none;">
+            <a href="https://www.linkedin.com/in/pavithra-gopisetty" target="_blank" rel="noopener" class="inline-flex items-center px-3 py-1 mt-2 bg-purple-500 text-white rounded-md font-medium hover:bg-purple-600 transition" style="text-decoration:none;">
+              <svg style="width:20px;height:20px;vertical-align:middle;margin-right:6px;" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.76 0-5 2.24-5 5v14c0 2.76 2.24 5 5 5h14c2.76 0 5-2.24 5-5v-14c0-2.76-2.24-5-5-5zm-11 19h-3v-9h3v9zm-1.5-10.28c-.97 0-1.75-.79-1.75-1.75s.78-1.75 1.75-1.75 1.75.79 1.75 1.75-.78 1.75-1.75 1.75zm15.5 10.28h-3v-4.5c0-1.08-.02-2.47-1.5-2.47-1.5 0-1.73 1.17-1.73 2.39v4.58h-3v-9h2.89v1.23h.04c.4-.75 1.38-1.54 2.84-1.54 3.04 0 3.6 2 3.6 4.59v4.72z"/></svg>
+              LinkedIn
+            </a>
+          </div>
+        </div>
+        <div class="flex flex-col md:flex-row items-center bg-white border border-purple-100 rounded-lg p-4 shadow-md max-w-2xl mx-auto">
+          <img src="/static/pete.jpg" alt="Coach Pete" class="w-20 h-20 rounded-full border-2 border-purple-400 object-cover mb-3 md:mb-0 md:mr-6">
+          <div>
+            <div class="text-lg font-semibold text-purple-700 mb-1">Coach Pete</div>
+            <div class="text-sm text-purple-500 font-medium mb-1">Co-Founder and Advisor</div>
+            <div class="text-sm text-gray-600 mb-2">
+              Coach Pete is a seasoned youth basketball coach with over a decade of experience developing young athletes on and off the court. Known for his emphasis on fundamentals, teamwork, and confidence-building, he has helped hundreds of players grow their skills and love for the game.<br><br>
+              As a co-founder and advisor at GirlsNav, Coach Pete brings deep expertise from the sidelines into the product — ensuring that every insight the platform provides is grounded in real coaching needs and player development. His passion for mentorship and practical training makes him a vital part of the GirlsNav mission.
+            </div>
+            <a href="https://www.linkedin.com/in/pavithra-gopisetty" target="_blank" rel="noopener" class="inline-flex items-center px-3 py-1 mt-2 bg-purple-500 text-white rounded-md font-medium hover:bg-purple-600 transition" style="text-decoration:none;">
               <svg style="width:20px;height:20px;vertical-align:middle;margin-right:6px;" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.76 0-5 2.24-5 5v14c0 2.76 2.24 5 5 5h14c2.76 0 5-2.24 5-5v-14c0-2.76-2.24-5-5-5zm-11 19h-3v-9h3v9zm-1.5-10.28c-.97 0-1.75-.79-1.75-1.75s.78-1.75 1.75-1.75 1.75.79 1.75 1.75-.78 1.75-1.75 1.75zm15.5 10.28h-3v-4.5c0-1.08-.02-2.47-1.5-2.47-1.5 0-1.73 1.17-1.73 2.39v4.58h-3v-9h2.89v1.23h.04c.4-.75 1.38-1.54 2.84-1.54 3.04 0 3.6 2 3.6 4.59v4.72z"/></svg>
               LinkedIn
             </a>
           </div>
         </div>
       </div>
-    </div>
+    </section>
 
-    <div class="cta">
-      <h2>Ready to See the Game Differently?</h2>
-      <a href="/">Try GirlsNav Now</a>
-    </div>
+    <section class="mb-6 text-center">
+      <h2 class="text-2xl font-bold text-purple-500 mb-2">Ready to See the Game Differently?</h2>
+      <a href="/" class="inline-block bg-purple-500 text-white px-5 py-2 rounded-lg font-semibold hover:bg-purple-600 transition">Try GirlsNav Now</a>
+    </section>
   </div>
 </body>
 </html> 
